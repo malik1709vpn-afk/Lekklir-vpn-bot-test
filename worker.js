@@ -9,60 +9,59 @@ export default {
       const body = await request.json();
       const msg = body.message || body.edited_message;
       if (!msg) return new Response("ok");
-
       const chatId = msg.chat.id;
       const userId = msg.from.id;
       const text = msg.text || "";
-      const name = msg.from.first_name || "Пользователь";
+      const name = msg.from.first_name || "User";
       const subUrl = SUB_BASE + "/" + userId;
-
-      const keyboard = {
-        keyboard: [
-          [{ text: "\u26A1 \u041F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0443" }, { text: "\uD83C\uDF0D \u0421\u0435\u0440\u0432\u0435\u0440\u044B" }],
-          [{ text: "\u2753 \u041F\u043E\u043C\u043E\u0449\u044C" }, { text: "\uD83C\uDF10 \u0421\u0430\u0439\u0442" }]
-        ],
-        resize_keyboard: true
-      };
+      const tgToken = env.TELEGRAM_TOKEN;
+      const kb = { keyboard: [[{ text: "⚡ Подписка" }, { text: "🌍 Серверы" }], [{ text: "❓ Помощь" }]], resize_keyboard: true };
 
       let replyText = "";
+      let parse_mode = "HTML";
 
       if (text.includes("/start")) {
-        replyText = "\u26A1 *Lekklir VPN*\n\n\u041F\u0440\u0438\u0432\u0435\u0442, *" + name + "*\\!\n\n\uD83C\uDF0D 22 \u0441\u0435\u0440\u0432\u0435\u0440\u0430\n\u267E\uFE0F \u0411\u0435\u0437\u043B\u0438\u043C\u0438\u0442\u043D\u044B\u0439 \u0442\u0440\u0430\u0444\u0438\u043A\n\uD83D\uDD12 VLESS Reality\n\u26A0\uFE0F \u0411\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u0439, \u043C\u043E\u0436\u0435\u0442 \u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u043D\u0435\u0441\u0442\u0430\u0431\u0438\u043B\u044C\u043D\u043E\\.\n\n\u041D\u0430\u0436\u043C\u0438\u0442\u0435 \u043A\u043D\u043E\u043F\u043A\u0443 \u043D\u0438\u0436\u0435:";
-      } else if (text.includes("/sub") || text.includes("\u26A1")) {
-        replyText = "\u26A1 *\u0412\u0430\u0448\u0430 \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0430*\n\n\uD83D\uDD17 \u0421\u0441\u044B\u043B\u043A\u0430:\n`" + subUrl + "`\n\n\uD83D\uDCF1 *\u041A\u0430\u043A \u043F\u043E\u0434\u043A\u043B\u044E\u0447\u0438\u0442\u044C:*\n1\\. \u0421\u043A\u0430\u0447\u0430\u0439\u0442\u0435 Happ \u0438\u043B\u0438 V2RayTun\n2\\. \u0421\u043A\u043E\u043F\u0438\u0440\u0443\u0439\u0442\u0435 \u0441\u0441\u044B\u043B\u043A\u0443\n3\\. \u0414\u043E\u0431\u0430\u0432\u044C\u0442\u0435 \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0443 \u0432 \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435\n\n\u267E\uFE0F \u0411\u0435\u0437\u043B\u0438\u043C\u0438\u0442\u043D\u044B\u0439 \u0442\u0440\u0430\u0444\u0438\u043A\n\u26A0\uFE0F \u0411\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u0439, \u043C\u043E\u0436\u0435\u0442 \u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u043D\u0435\u0441\u0442\u0430\u0431\u0438\u043B\u044C\u043D\u043E\\.";
-      } else if (text.includes("\uD83C\uDF0D") || text.includes("/servers")) {
-        replyText = "\u26A1 *\u0421\u0435\u0440\u0432\u0435\u0440\u044B Lekklir VPN*\n\n\uD83D\uDCF6 *LTE:*\n\uD83C\uDDF7\uD83C\uDDFA \u0420\u043E\u0441\u0441\u0438\u044F \\#1 \\#2\n\uD83C\uDDEB\uD83C\uDDEE \u0424\u0438\u043D\u043B\u044F\u043D\u0434\u0438\u044F \\#1 \\#2 \\#3 \\#4\n\uD83C\uDDF3\uD83C\uDDF1 \u041D\u0438\u0434\u0435\u0440\u043B\u0430\u043D\u0434\u044B \\#1\n\uD83C\uDDEC\uD83C\uDDE7 \u0412\u0435\u043B\u0438\u043A\u043E\u0431\u0440\u0438\u0442\u0430\u043D\u0438\u044F \\#1\n\uD83C\uDDE9\uD83C\uDDEA \u0413\u0435\u0440\u043C\u0430\u043D\u0438\u044F \\#1 \\#2\n\uD83C\uDDF1\uD83C\uDDFB \u041B\u0430\u0442\u0432\u0438\u044F \\#1\n\uD83C\uDDEA\uD83C\uDDEA \u042D\u0441\u0442\u043E\u043D\u0438\u044F \\#1 \\#2\n\uD83C\uDDEE\uD83C\uDDF9 \u0418\u0442\u0430\u043B\u0438\u044F \\#1\n\uD83C\uDDF8\uD83C\uDDEA \u0428\u0432\u0435\u0446\u0438\u044F \\#1 \\#2\n\n\uD83D\uDCE1 *WI\\-FI:*\n\uD83C\uDDF8\uD83C\uDDEA \u0428\u0432\u0435\u0446\u0438\u044F \u2022 \uD83C\uDDE9\uD83C\uDDEA \u0413\u0435\u0440\u043C\u0430\u043D\u0438\u044F \u2022 \uD83C\uDDF7\uD83C\uDDFA \u0420\u043E\u0441\u0441\u0438\u044F \u2022 \uD83C\uDDEB\uD83C\uDDEE \u0424\u0438\u043D\u043B\u044F\u043D\u0434\u0438\u044F \u2022 \uD83C\uDDF5\uD83C\uDDF1 \u041F\u043E\u043B\u044C\u0448\u0430";
-      } else if (text.includes("\u2753") || text.includes("/help")) {
-        replyText = "\u26A1 *\u041F\u043E\u043C\u043E\u0449\u044C*\n\n/sub \\- \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0443\n/servers \\- \u0441\u043F\u0438\u0441\u043E\u043A \u0441\u0435\u0440\u0432\u0435\u0440\u043E\u0432\n/help \\- \u043F\u043E\u043C\u043E\u0449\u044C\n\n\uD83D\uDCF1 Happ \\| V2RayTun\n\u26A0\uFE0F \u0411\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u0439, \u043C\u043E\u0436\u0435\u0442 \u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u043D\u0435\u0441\u0442\u0430\u0431\u0438\u043B\u044C\u043D\u043E\\.";
-      } else if (text.includes("\uD83C\uDF10")) {
-        replyText = "\uD83C\uDF10 https://lekklir\\-vpn\\-new\\.sahzada33vpn\\.workers\\.dev";
+        replyText = "⚡ <b>Lekklir VPN</b>\n\nПривет, <b>" + name + "</b>!\n\n🌍 22 сервера\n♾ Безлимитный трафик\n🔒 VLESS Reality\n\n⚠️ Бесплатный, может работать нестабильно.\n\nНажми кнопку ниже:";
+      } else if (text.includes("/sub") || text.includes("Подписка")) {
+        replyText = "⚡ <b>Ваша подписка</b>\n\n🔗 Ссылка:\n<code>" + subUrl + "</code>\n\n📱 Скачайте Happ или V2RayTun\nВставьте ссылку в приложение\n\n♾ Безлимитный трафик\n⚠️ Бесплатный, может работать нестабильно.";
+      } else if (text.includes("Серверы") || text.includes("/servers")) {
+        replyText = "⚡ <b>Серверы</b>\n\n📶 <b>LTE:</b>\n🇷🇺 Россия #1 #2\n🇫🇮 Финляндия #1 #2 #3 #4\n🇳🇱 Нидерланды #1\n🇬🇧 Великобритания #1\n🇩🇪 Германия #1 #2\n🇱🇻 Латвия #1\n🇪🇪 Эстония #1 #2\n🇮🇹 Италия #1\n🇸🇪 Швеция #1 #2\n\n📡 <b>WI-FI:</b>\n🇸🇪 Швеция • 🇩🇪 Германия • 🇷🇺 Россия • 🇫🇮 Финляндия • 🇵🇱 Польша";
+      } else if (text.includes("Помощь") || text.includes("/help")) {
+        replyText = "⚡ <b>Помощь</b>\n\n/sub - подписка\n/servers - серверы\n/help - помощь\n\n📱 Happ | V2RayTun\n💬 Discord: discord.gg/rnXgSaGm";
       } else {
-        replyText = "\u041D\u0430\u043F\u0438\u0448\u0438\u0442\u0435 /start \u0447\u0442\u043E\u0431\u044B \u043D\u0430\u0447\u0430\u0442\u044C";
+        replyText = "Напишите /start чтобы начать";
       }
 
-      const tgToken = env.TELEGRAM_TOKEN;
       await fetch("https://api.telegram.org/bot" + tgToken + "/sendMessage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: replyText,
-          parse_mode: "MarkdownV2",
-          reply_markup: keyboard
-        })
+        body: JSON.stringify({ chat_id: chatId, text: replyText, parse_mode, reply_markup: kb })
       });
-
       return new Response("ok");
     }
 
     // =================== DISCORD WEBHOOK ===================
     if (path === "/discord" && request.method === "POST") {
-      const body = await request.json();
+      const PUBLIC_KEY = env.DISCORD_PUBLIC_KEY || "f5970cb808b9d5373d5859b41aab130dfcf89a3bafdca7a0bcfe166da299764c";
+      const signature = request.headers.get("x-signature-ed25519");
+      const timestamp = request.headers.get("x-signature-timestamp");
+      const rawBody = await request.text();
+
+      // Верификация подписи Discord
+      try {
+        const encoder = new TextEncoder();
+        const keyData = hexToBytes(PUBLIC_KEY);
+        const cryptoKey = await crypto.subtle.importKey("raw", keyData, { name: "NODE-ED25519", namedCurve: "NODE-ED25519" }, false, ["verify"]);
+        const valid = await crypto.subtle.verify("NODE-ED25519", cryptoKey, hexToBytes(signature), encoder.encode(timestamp + rawBody));
+        if (!valid) return new Response("Invalid signature", { status: 401 });
+      } catch (e) {
+        return new Response("Verification error", { status: 401 });
+      }
+
+      const body = JSON.parse(rawBody);
 
       if (body.type === 1) {
-        return new Response(JSON.stringify({ type: 1 }), {
-          headers: { "Content-Type": "application/json" }
-        });
+        return new Response(JSON.stringify({ type: 1 }), { headers: { "Content-Type": "application/json" } });
       }
 
       if (body.type === 2) {
@@ -70,40 +69,49 @@ export default {
         const userId = body.member ? body.member.user.id : body.user.id;
         const username = body.member ? body.member.user.username : body.user.username;
         const subUrl = SUB_BASE + "/" + userId;
-
         let content = "";
 
         if (cmd === "sub") {
-          content = "\u26A1 **Lekklir VPN \u2014 \u0412\u0430\u0448\u0430 \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0430**\n\n\uD83D\uDC64 **" + username + "**\n\uD83D\uDD17 \u0421\u0441\u044B\u043B\u043A\u0430:\n```\n" + subUrl + "\n```\n\uD83D\uDCF1 \u0421\u043A\u0430\u0447\u0430\u0439\u0442\u0435 **Happ** \u0438\u043B\u0438 **V2RayTun**, \u0432\u0441\u0442\u0430\u0432\u044C\u0442\u0435 \u0441\u0441\u044B\u043B\u043A\u0443 \u0432 \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435\n\u267E\uFE0F \u0411\u0435\u0437\u043B\u0438\u043C\u0438\u0442\u043D\u044B\u0439 \u0442\u0440\u0430\u0444\u0438\u043A\n\u26A0\uFE0F \u0411\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u0439, \u043C\u043E\u0436\u0435\u0442 \u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u043D\u0435\u0441\u0442\u0430\u0431\u0438\u043B\u044C\u043D\u043E";
+          content = "⚡ **Lekklir VPN — Ваша подписка**\n\n👤 **" + username + "**\n🔗 Ссылка:\n```\n" + subUrl + "\n```\n📱 Скачайте **Happ** или **V2RayTun**, вставьте ссылку\n♾️ Безлимитный трафик\n⚠️ Бесплатный, может работать нестабильно";
         } else if (cmd === "servers") {
-          content = "\u26A1 **\u0421\u0435\u0440\u0432\u0435\u0440\u044B**\n\n\uD83D\uDCF6 **LTE:** \uD83C\uDDF7\uD83C\uDDFA\uD83C\uDDEB\uD83C\uDDEE\uD83C\uDDF3\uD83C\uDDF1\uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDF1\uD83C\uDDFB\uD83C\uDDEA\uD83C\uDDEA\uD83C\uDDEE\uD83C\uDDF9\uD83C\uDDF8\uD83C\uDDEA\n\uD83D\uDCE1 **WI-FI:** \uD83C\uDDF8\uD83C\uDDEA\uD83C\uDDE9\uD83C\uDDEA\uD83C\uDDF7\uD83C\uDDFA\uD83C\uDDEB\uD83C\uDDEE\uD83C\uDDF5\uD83C\uDDF1\n\n\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 `/sub` \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0432\u0441\u0435 22 \u0441\u0435\u0440\u0432\u0435\u0440\u0430!";
+          content = "⚡ **Серверы**\n\n📶 **LTE:** 🇷🇺🇫🇮🇳🇱🇬🇧🇩🇪🇱🇻🇪🇪🇮🇹🇸🇪\n📡 **WI-FI:** 🇸🇪🇩🇪🇷🇺🇫🇮🇵🇱\n\nИспользуйте `/sub` чтобы получить все 22 сервера!";
         } else if (cmd === "help") {
-          content = "\u26A1 **\u041F\u043E\u043C\u043E\u0449\u044C**\n\n`/sub` \u2014 \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u043F\u043E\u0434\u043F\u0438\u0441\u043A\u0443\n`/servers` \u2014 \u0441\u043F\u0438\u0441\u043E\u043A \u0441\u0435\u0440\u0432\u0435\u0440\u043E\u0432\n`/help` \u2014 \u043F\u043E\u043C\u043E\u0449\u044C\n\n\uD83C\uDF10 https://lekklir-vpn-new.sahzada33vpn.workers.dev";
+          content = "⚡ **Помощь**\n\n`/sub` — подписка\n`/servers` — серверы\n`/help` — помощь\n\n🌐 https://lekklir-vpn-new.sahzada33vpn.workers.dev";
         }
 
-        return new Response(JSON.stringify({ type: 4, data: { content, flags: 64 } }), {
-          headers: { "Content-Type": "application/json" }
-        });
+        return new Response(JSON.stringify({ type: 4, data: { content, flags: 64 } }), { headers: { "Content-Type": "application/json" } });
       }
 
       return new Response("ok");
     }
 
-    // =================== SETUP PAGE ===================
+    // =================== SETUP ===================
     if (path === "/setup") {
       const tgToken = env.TELEGRAM_TOKEN;
       const workerUrl = url.origin;
-      let tgStatus = "не настроен";
+      let result = "";
       if (tgToken) {
-        const r = await fetch("https://api.telegram.org/bot" + tgToken + "/setWebhook?url=" + workerUrl + "/telegram");
+        const r = await fetch("https://api.telegram.org/bot" + tgToken + "/setWebhook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: workerUrl + "/telegram", allowed_updates: ["message"] })
+        });
         const j = await r.json();
-        tgStatus = j.ok ? "webhook установлен!" : JSON.stringify(j);
+        result = j.ok ? "✅ Telegram webhook установлен!" : "❌ Ошибка: " + JSON.stringify(j);
+      } else {
+        result = "❌ TELEGRAM_TOKEN не найден";
       }
-      return new Response("Telegram: " + tgStatus + "\nDiscord: настрой вручную через discord.com/developers", {
-        headers: { "Content-Type": "text/plain; charset=utf-8" }
-      });
+      return new Response(result, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
     }
 
-    return new Response("Lekklir VPN Bot is running!", { headers: { "Content-Type": "text/plain" } });
+    return new Response("⚡ Lekklir VPN Bot is running!", { headers: { "Content-Type": "text/plain; charset=utf-8" } });
   }
+}
+
+function hexToBytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+  }
+  return bytes;
 }
