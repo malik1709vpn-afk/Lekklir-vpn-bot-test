@@ -1,6 +1,6 @@
 name = "lekklir-vpn-new"
 main = "worker1.js"
-compatibility_date = "2026-07-02"
+compatibility_date = "2026-07-01"
 
 [[kv_namespaces]]
 binding = "LEKKLIR_KV"
